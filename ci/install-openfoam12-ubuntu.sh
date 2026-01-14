@@ -27,7 +27,11 @@ $SUDO install -d -m 0755 /etc/apt/keyrings
 curl -fsSL https://dl.openfoam.org/gpg.key | $SUDO gpg --dearmor -o /etc/apt/keyrings/openfoam.gpg
 $SUDO chmod a+r /etc/apt/keyrings/openfoam.gpg
 
-echo "deb [signed-by=/etc/apt/keyrings/openfoam.gpg] https://dl.openfoam.org/ubuntu ${codename} main" | \
+# NOTE: GitHub-hosted runners can fail to install `openfoam12` when the repo URL
+# uses HTTPS due to an upstream HTTPS->HTTP redirect for the package payload
+# (apt rejects scheme downgrades). Using HTTP here avoids the downgrade while
+# still relying on the repo's signed metadata/packages.
+echo "deb [signed-by=/etc/apt/keyrings/openfoam.gpg] http://dl.openfoam.org/ubuntu ${codename} main" | \
   $SUDO tee /etc/apt/sources.list.d/openfoam.list >/dev/null
 
 $SUDO apt-get update -y
