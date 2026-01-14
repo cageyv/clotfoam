@@ -136,7 +136,7 @@ volScalarField ADP
     IOobject
     (
         "ADP",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -153,7 +153,7 @@ volScalarField sigma_release
     IOobject
     (
         "sigma_release",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -202,7 +202,7 @@ Plt.field.set
         IOobject
         (   
             "plt_Pmu",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,                                      
             IOobject::AUTO_WRITE
@@ -221,7 +221,7 @@ Plt.field.set
         IOobject
         (
             "plt_Pma",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,
             IOobject::AUTO_WRITE
@@ -240,7 +240,7 @@ Plt.field.set
         IOobject
         (
             "plt_Pba",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::READ_IF_PRESENT,
             IOobject::AUTO_WRITE
@@ -259,7 +259,7 @@ Plt.field.set
         IOobject
         (
             "plt_Pbse",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::READ_IF_PRESENT,
             IOobject::AUTO_WRITE
@@ -308,7 +308,7 @@ if (coagReactionsOn)
             IOobject
             (   
                 "seBound_E0",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::MUST_READ,                                      
                 IOobject::AUTO_WRITE
@@ -327,7 +327,7 @@ if (coagReactionsOn)
             IOobject
             (
                 "seBound_C0",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::MUST_READ,
                 IOobject::AUTO_WRITE
@@ -387,7 +387,7 @@ fluidPhase.field.set
         IOobject
         (   
             "fluidPhase_S1",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,                                      
             IOobject::AUTO_WRITE
@@ -406,7 +406,7 @@ fluidPhase.field.set
         IOobject
         (   
             "fluidPhase_S2",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,                                      
             IOobject::AUTO_WRITE
@@ -425,7 +425,7 @@ fluidPhase.field.set
         IOobject
         (
             "fluidPhase_E1",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,
             IOobject::AUTO_WRITE
@@ -444,7 +444,7 @@ fluidPhase.field.set
         IOobject
         (
             "fluidPhase_E2",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,
             IOobject::AUTO_WRITE
@@ -493,7 +493,7 @@ if(coagReactionsOn)
             IOobject
             (   
                 "pltBound_S1b",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::MUST_READ,                                      
                 IOobject::AUTO_WRITE
@@ -512,7 +512,7 @@ if(coagReactionsOn)
             IOobject
             (   
                 "pltBound_S2b",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE
@@ -531,7 +531,7 @@ if(coagReactionsOn)
             IOobject
             (
                 "pltBound_E1b",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE
@@ -550,7 +550,7 @@ if(coagReactionsOn)
             IOobject
             (
                 "pltBound_E2b",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE
@@ -569,7 +569,7 @@ if(coagReactionsOn)
             IOobject
             (
                 "pltBound_C1",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE
@@ -588,7 +588,7 @@ if(coagReactionsOn)
             IOobject
             (
                 "pltBound_C2",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE

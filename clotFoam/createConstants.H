@@ -126,7 +126,7 @@ dimensionedScalar h_rxn //time step for reactions
 dimensionedScalar Dc
 (
     "Dc",
-    dimViscosity,
+    dimKinematicViscosity,
     inputParameters.lookup("Dc")
 );
 
