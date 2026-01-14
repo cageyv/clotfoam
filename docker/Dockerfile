@@ -18,11 +18,10 @@ WORKDIR /home/ofuser
 # Copy the clotFoam source code
 COPY --chown=ofuser:ofuser clotFoam /home/ofuser/clotFoam
 COPY --chown=ofuser:ofuser tutorials /home/ofuser/tutorials
-COPY --chown=ofuser:ofuser docker/run-test.sh /home/ofuser/docker/run-test.sh
-COPY --chown=ofuser:ofuser docker/test.sh /home/ofuser/docker/test.sh
+COPY --chown=ofuser:ofuser docker/*.sh /home/ofuser/docker/
 
 # Make scripts executable
-RUN chmod +x /home/ofuser/docker/run-test.sh /home/ofuser/docker/test.sh
+RUN chmod +x /home/ofuser/docker/*.sh
 
 # Create OpenFOAM user directory structure
 RUN mkdir -p /home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/bin && \
