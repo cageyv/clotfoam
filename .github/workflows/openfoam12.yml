@@ -18,11 +18,7 @@ jobs:
               openfoamfoundation/openfoam12:12
           - foam: v2412
             fallback_images: |
-              opencfd/openfoam2412:latest
-              opencfd/openfoam2412:2412
-              openfoam/openfoam2412:latest
-              openfoam/openfoam2412-default:latest
-              opencfd/openfoam:latest
+              opencfd/openfoam-dev:2412
     steps:
       - name: Checkout
         uses: actions/checkout@v4

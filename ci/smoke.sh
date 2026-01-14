@@ -9,6 +9,8 @@ source_openfoam() {
   fi
 
   local candidates=(
+    "/opt/openfoam-dev/etc/bashrc"
+    "/usr/lib/openfoam/openfoam-dev/etc/bashrc"
     "/opt/openfoam2412/etc/bashrc"
     "/usr/lib/openfoam/openfoam2412/etc/bashrc"
     "/opt/openfoam12/etc/bashrc"
