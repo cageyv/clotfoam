@@ -46,8 +46,9 @@ Goals: prove the solver starts, advances timesteps, writes at least one time dir
 
 ## CI/CD plan (GitHub Actions)
 ### Minimal CI (this repo)
-- **Job**: OpenFOAM v12 + v2412 build + smoke run (Docker)
-  - Images: OpenFOAM v12 and OpenFOAM v2412
+- **Job**: OpenFOAM v12 (Ubuntu packages) + v2412 (Docker) build + smoke run
+  - v12: install via OpenFOAM.org apt repo on Ubuntu 24.04 runner
+  - v2412: run via `opencfd/openfoam-dev:2412` Docker image
   - Steps:
     - compile `clotFoam`
     - run `rectangle2D` smoke

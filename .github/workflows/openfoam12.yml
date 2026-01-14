@@ -5,20 +5,38 @@ on:
   pull_request:
 
 jobs:
-  build-and-smoke:
+  openfoam12-apt:
     runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - foam: v12
-            fallback_images: |
-              openfoam/openfoam12:latest
-              openfoamfoundation/openfoam12:latest
-              openfoamfoundation/openfoam12:12
-          - foam: v2412
-            fallback_images: |
-              opencfd/openfoam-dev:2412
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set executable bits
+        shell: bash
+        run: |
+          chmod +x ci/build.sh ci/smoke.sh
+          chmod +x ci/install-openfoam12-ubuntu.sh
+
+      - name: Install OpenFOAM v12 (Ubuntu packages)
+        shell: bash
+        run: |
+          ./ci/install-openfoam12-ubuntu.sh
+
+      - name: Build + smoke test (rectangle2D)
+        shell: bash
+        run: |
+          CI_ARTIFACTS_DIR="${{ github.workspace }}/.ci-artifacts/v12" CI=1 ./ci/smoke.sh
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openfoam-v12-logs
+          path: |
+            .ci-artifacts/v12/**/log.*
+
+  openfoam2412-docker:
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,26 +46,10 @@ jobs:
         run: |
           chmod +x ci/build.sh ci/smoke.sh
 
-      - name: Select OpenFOAM Docker image
+      - name: Docker pull (OpenFOAM-dev 2412)
         shell: bash
         run: |
-          set -euo pipefail
-          chosen=""
-          while IFS= read -r img; do
-            [[ -z "${img// /}" ]] && continue
-            echo "Trying image: $img"
-            if docker pull "$img"; then
-              chosen="$img"
-              break
-            fi
-          done <<< "${{ matrix.fallback_images }}"
-
-          if [[ -z "$chosen" ]]; then
-            echo "ERROR: Could not pull any OpenFOAM image candidates." >&2
-            exit 1
-          fi
-
-          echo "OPENFOAM_IMAGE=$chosen" >> "$GITHUB_ENV"
+          docker pull opencfd/openfoam-dev:2412
 
       - name: Build + smoke test (rectangle2D)
         shell: bash
@@ -56,15 +58,15 @@ jobs:
             -v "${{ github.workspace }}:/work" \
             -w /work \
             -e CI=1 \
-            -e CI_ARTIFACTS_DIR="/work/.ci-artifacts/${{ matrix.foam }}" \
-            "$OPENFOAM_IMAGE" \
+            -e CI_ARTIFACTS_DIR="/work/.ci-artifacts/v2412" \
+            opencfd/openfoam-dev:2412 \
             bash -lc "./ci/smoke.sh"
 
       - name: Upload logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: openfoam-${{ matrix.foam }}-logs
+          name: openfoam-v2412-logs
           path: |
-            .ci-artifacts/${{ matrix.foam }}/**/log.*
+            .ci-artifacts/v2412/**/log.*
 
