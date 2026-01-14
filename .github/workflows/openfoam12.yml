@@ -51,8 +51,11 @@ jobs:
       - name: Build + smoke test (rectangle2D)
         shell: bash
         run: |
-          mkdir -p "${{ github.workspace }}/.ci-artifacts/v2412"
-          CI=1 CI_ARTIFACTS_DIR="${{ github.workspace }}/.ci-artifacts/v2412" bash -lc "./ci/smoke.sh"
+          # In container jobs, `${{ github.workspace }}` expands to the host path.
+          # Use $GITHUB_WORKSPACE (container path, typically /__w/...) so logs are
+          # written where `upload-artifact` can find them.
+          mkdir -p "$GITHUB_WORKSPACE/.ci-artifacts/v2412"
+          CI=1 CI_ARTIFACTS_DIR="$GITHUB_WORKSPACE/.ci-artifacts/v2412" bash -lc "./ci/smoke.sh"
 
       - name: Upload logs on failure
         if: failure()
