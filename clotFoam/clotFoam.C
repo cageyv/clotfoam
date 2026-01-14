@@ -66,7 +66,7 @@ Author: David Montgomery
 \*---------------------------------------------------------------------------*/
 
 // Classes from OpenFOAM
-#include "fvCFD.H"
+#include "argList.H"
 #include "fvMesh.H"
 #include "volFields.H"
 #include "surfaceFields.H"
@@ -75,6 +75,8 @@ Author: David Montgomery
 #include "fvm.H"
 #include "pisoControl.H"
 #include "mathematicalConstants.H"
+
+using namespace Foam;
 
 // Classes/structures for managing various species
 #include "plateletConstants.H"

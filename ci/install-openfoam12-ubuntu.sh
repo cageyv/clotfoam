@@ -37,5 +37,10 @@ echo "deb [signed-by=/etc/apt/keyrings/openfoam.gpg] http://dl.openfoam.org/ubun
 $SUDO apt-get update -y
 $SUDO apt-get install -y --no-install-recommends openfoam12
 
+# OpenFOAM.org Debian packages install sources but do not ship generated
+# `lnInclude/` link farms. These are required for `wmake`-based user apps that
+# use the standard `-I$(LIB_SRC)/*/lnInclude` include paths.
+$SUDO bash -lc '. /opt/openfoam12/etc/bashrc >/dev/null 2>&1; cd "$WM_PROJECT_DIR"; wmakeLnIncludeAll -j2'
+
 echo "Installed OpenFOAM v12."
 
