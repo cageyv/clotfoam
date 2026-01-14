@@ -12,15 +12,17 @@ jobs:
       matrix:
         include:
           - foam: v12
-            image: openfoam/openfoam12:latest
             fallback_images: |
               openfoam/openfoam12:latest
+              openfoamfoundation/openfoam12:latest
+              openfoamfoundation/openfoam12:12
           - foam: v2412
-            image: openfoam/openfoam2412:latest
             fallback_images: |
+              opencfd/openfoam2412:latest
+              opencfd/openfoam2412:2412
               openfoam/openfoam2412:latest
               openfoam/openfoam2412-default:latest
-              opencfd/openfoam2412:latest
+              opencfd/openfoam:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
