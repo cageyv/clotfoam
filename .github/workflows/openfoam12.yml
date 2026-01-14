@@ -60,7 +60,7 @@ jobs:
             -e CI=1 \
             -e CI_ARTIFACTS_DIR="/work/.ci-artifacts/v2412" \
             opencfd/openfoam-dev:2412 \
-            bash -lc "./ci/smoke.sh"
+            bash -lc "pwd && ls -la && ls -la ci && bash ci/smoke.sh"
 
       - name: Upload logs on failure
         if: failure()
