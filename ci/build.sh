@@ -8,6 +8,9 @@ source_openfoam() {
     return 0
   fi
 
+  # OpenFOAM bashrc scripts are not always compatible with strict bash flags.
+  # Temporarily relax flags while sourcing.
+
   local candidates=(
     "/opt/openfoam-dev/etc/bashrc"
     "/usr/lib/openfoam/openfoam-dev/etc/bashrc"
@@ -24,7 +27,14 @@ source_openfoam() {
   for f in "${candidates[@]}"; do
     if [[ -f "$f" ]]; then
       # shellcheck disable=SC1090
+      set +e +u +o pipefail
       source "$f"
+      local rc=$?
+      set -euo pipefail
+      if [[ "$rc" != "0" ]]; then
+        echo "ERROR: Failed to source OpenFOAM bashrc: $f" >&2
+        return 1
+      fi
       return 0
     fi
   done
