@@ -67,6 +67,13 @@ Author: David Montgomery
 
 // Classes from OpenFOAM
 #include "argList.H"
+#include "dimensionSets.H"
+#include "pressureReference.H"
+#include "findRefCell.H"
+#include "constrainPressure.H"
+#include "constrainHbyA.H"
+#include "adjustPhi.H"
+
 #include "fvMesh.H"
 #include "volFields.H"
 #include "surfaceFields.H"
@@ -101,15 +108,7 @@ double R_ADP(const double& tau)
 
 int main(int argc, char *argv[])
 {
-    #if defined(__has_include)
-        #if __has_include("setRootCaseLists.H")
-            #include "setRootCaseLists.H"
-        #else
-            #include "setRootCase.H"
-        #endif
-    #else
-        #include "setRootCase.H"
-    #endif
+    #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
 
@@ -136,7 +135,7 @@ int main(int argc, char *argv[])
     {   
         if (runTime.write())
         {
-            Info<< "Time = " << runTime.timeName() << nl << endl;
+            Info<< "Time = " << runTime.userTimeName() << nl << endl;
         }
 
         // Variable time step control variables and adjustments

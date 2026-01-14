@@ -8,7 +8,7 @@ volScalarField p
     IOobject
     (
         "p",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -23,7 +23,7 @@ volVectorField U
     IOobject
     (
         "U",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -38,7 +38,7 @@ volScalarField shearRate
     IOobject
     (
         "shearRate",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -50,8 +50,8 @@ volScalarField shearRate
 
 label pRefCell = 0;
 scalar pRefValue = 0.0;
-setRefCell(p, mesh.solutionDict().subDict("PISO"), pRefCell, pRefValue);
-mesh.setFluxRequired(p.name());
+setRefCell(p, piso.dict(), pRefCell, pRefValue);
+mesh.schemes().setFluxRequired(p.name());
 
 /**************************************************************************
     Fields for Platelet Reactions
@@ -63,7 +63,7 @@ volScalarField eta
     IOobject
     (
         "eta",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -78,7 +78,7 @@ volScalarField Hadh
     IOobject
     (
         "Hadh",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -103,7 +103,7 @@ volScalarField Theta_T
     IOobject
     (
         "Theta_T",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -118,7 +118,7 @@ volScalarField Theta_B
     IOobject
     (
         "Theta_B",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE

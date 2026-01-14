@@ -50,7 +50,7 @@ IOList<scalar> tau
     IOobject
     (   
         "tau",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,                                      
         IOobject::NO_WRITE
@@ -74,7 +74,7 @@ forAll(ddt_Pbnew,i)
                 IOobject
                 (   
                     "ddt_Pbnew_" + std::to_string(i),
-                    runTime.timeName(),
+                    runTime.name(),
                     mesh,
                     IOobject::NO_READ,                                      
                     IOobject::NO_WRITE
@@ -93,7 +93,7 @@ forAll(ddt_Pbnew,i)
                 IOobject
                 (   
                     "ddt_Pbnew_" + std::to_string(i),
-                    runTime.timeName(),
+                    runTime.name(),
                     mesh,
                     IOobject::MUST_READ,                                      
                     IOobject::NO_WRITE

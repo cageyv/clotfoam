@@ -33,7 +33,7 @@ struct plateletConstants
     dimensionedScalar Dp
     {
         "Dp",
-        dimViscosity,
+        dimKinematicViscosity,
         inputParameters.lookup("Dp")
     };
 
@@ -65,7 +65,7 @@ struct plateletConstants
     dimensionedScalar ADP_ast
     {
         "ADP_ast",
-        dimMoles/dimVol,
+        dimMoles/dimVolume,
         inputParameters.lookup("ADP_ast")
     };
 

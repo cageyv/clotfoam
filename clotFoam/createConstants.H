@@ -13,7 +13,7 @@ IOdictionary inputParameters
 );
 
 // Patch identifier of the injury boundary
-label injuryPatchID = mesh.boundaryMesh().findPatchID("injuryWalls");
+label injuryPatchID = mesh.boundaryMesh().findIndex("injuryWalls");
 
 // Flag for whether coagulation reactions occur or not 
 const bool coagReactionsOn =
@@ -31,7 +31,7 @@ const bool smoothHadh =
 dimensionedScalar nu
 (
     "nu",
-    dimViscosity,
+    dimKinematicViscosity,
     inputParameters.lookup("nu")
 );
 
@@ -63,7 +63,7 @@ Info<< "\nReading constants for ADP and sigma_release\n" << endl;
 dimensionedScalar D_ADP
 (
     "D_ADP",
-    dimViscosity,
+    dimKinematicViscosity,
     inputParameters.lookup("D_ADP")
 );
 
