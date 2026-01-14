@@ -24,3 +24,6 @@ log*
 
 # bash history
 *.bash_history
+
+# CI artifacts (docker smoke runs)
+.ci-artifacts/

@@ -344,8 +344,12 @@ if (coagReactionsOn)
 }
 else 
 {
-    Info<< "Destroying species object for seBound Chemicals\n" << endl;
-    seBound.~Species();
+    Info<< "Coagulation reactions disabled; skipping seBound species init\n" << endl;
+    // NOTE:
+    // Do NOT call destructors explicitly here. The seBound object is stack-allocated
+    // (derived type), and explicitly calling ~Species() is undefined behavior.
+    // When coagReactionsOn == false, the coagulation transport/reaction includes are
+    // skipped in the main loop, so seBound is intentionally unused.
 }
 
 /**************************************************************************
@@ -598,6 +602,5 @@ if(coagReactionsOn)
 }
 else 
 {
-    Info<< "Destroying species object for pltBound Chemicals\n" << endl;
-    pltBound.~Species();
+    Info<< "Coagulation reactions disabled; skipping pltBound species init\n" << endl;
 }
