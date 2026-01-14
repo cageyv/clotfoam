@@ -35,8 +35,10 @@ jobs:
           path: |
             .ci-artifacts/v12/**/log.*
 
-  openfoam2412-docker:
+  openfoam2412-container:
     runs-on: ubuntu-24.04
+    container:
+      image: opencfd/openfoam-dev:2412
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,21 +48,11 @@ jobs:
         run: |
           chmod +x ci/build.sh ci/smoke.sh
 
-      - name: Docker pull (OpenFOAM-dev 2412)
-        shell: bash
-        run: |
-          docker pull opencfd/openfoam-dev:2412
-
       - name: Build + smoke test (rectangle2D)
         shell: bash
         run: |
-          docker run --rm \
-            -v "${{ github.workspace }}:/work" \
-            -w /work \
-            -e CI=1 \
-            -e CI_ARTIFACTS_DIR="/work/.ci-artifacts/v2412" \
-            opencfd/openfoam-dev:2412 \
-            bash -lc "pwd && ls -la && ls -la ci && bash ci/smoke.sh"
+          mkdir -p "${{ github.workspace }}/.ci-artifacts/v2412"
+          CI=1 CI_ARTIFACTS_DIR="${{ github.workspace }}/.ci-artifacts/v2412" bash -lc "./ci/smoke.sh"
 
       - name: Upload logs on failure
         if: failure()
