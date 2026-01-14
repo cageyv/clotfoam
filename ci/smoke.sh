@@ -4,9 +4,9 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 source_openfoam() {
-  if command -v foamVersion >/dev/null 2>&1; then
-    return 0
-  fi
+  # Even if `foamVersion` exists, ensure we have a usable OpenFOAM tree.
+  # Some environments can provide a bashrc that defines commands but points at a
+  # missing/partial install, which later breaks compilation (missing headers).
 
   # OpenFOAM bashrc scripts are not always compatible with strict bash flags.
   # For example, OpenFOAM v2412 references WM_PROJECT_SITE unguarded and also
@@ -36,7 +36,23 @@ source_openfoam() {
         echo "ERROR: Failed to source OpenFOAM bashrc: $f" >&2
         return 1
       fi
-      return 0
+
+      if command -v foamVersion >/dev/null 2>&1; then
+        local fv_cfd_h=""
+        if [[ -n "${FOAM_SRC:-}" ]]; then
+          if [[ -f "$FOAM_SRC/finiteVolume/lnInclude/fvCFD.H" ]]; then
+            fv_cfd_h="$FOAM_SRC/finiteVolume/lnInclude/fvCFD.H"
+          elif [[ -f "$FOAM_SRC/OpenFOAM/lnInclude/fvCFD.H" ]]; then
+            fv_cfd_h="$FOAM_SRC/OpenFOAM/lnInclude/fvCFD.H"
+          fi
+        fi
+
+        if [[ -n "$fv_cfd_h" ]]; then
+          return 0
+        fi
+      fi
+
+      echo "WARN: Sourced OpenFOAM bashrc but headers not found (skipping): $f" >&2
     fi
   done
 

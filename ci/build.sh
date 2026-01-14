@@ -18,7 +18,6 @@ source_openfoam() {
     "/usr/lib/openfoam/openfoam2412/etc/bashrc"
     "/opt/openfoam12/etc/bashrc"
     "/usr/lib/openfoam/openfoam12/etc/bashrc"
-    "/usr/lib/openfoam/openfoam12/etc/bashrc"
     "/opt/openfoam/etc/bashrc"
     "$HOME/OpenFOAM/OpenFOAM-v2412/etc/bashrc"
     "$HOME/OpenFOAM/OpenFOAM-v12/etc/bashrc"
@@ -35,7 +34,26 @@ source_openfoam() {
         echo "ERROR: Failed to source OpenFOAM bashrc: $f" >&2
         return 1
       fi
-      return 0
+      # Sanity check: in some environments a bashrc may exist but point to an
+      # incomplete/non-existent OpenFOAM tree (e.g. missing headers under
+      # $FOAM_SRC), causing wmake include paths like /opt/openfoam12/src/... that
+      # don't resolve.
+      if command -v foamVersion >/dev/null 2>&1; then
+        local fv_cfd_h=""
+        if [[ -n "${FOAM_SRC:-}" ]]; then
+          if [[ -f "$FOAM_SRC/finiteVolume/lnInclude/fvCFD.H" ]]; then
+            fv_cfd_h="$FOAM_SRC/finiteVolume/lnInclude/fvCFD.H"
+          elif [[ -f "$FOAM_SRC/OpenFOAM/lnInclude/fvCFD.H" ]]; then
+            fv_cfd_h="$FOAM_SRC/OpenFOAM/lnInclude/fvCFD.H"
+          fi
+        fi
+
+        if [[ -n "$fv_cfd_h" ]]; then
+          return 0
+        fi
+      fi
+
+      echo "WARN: Sourced OpenFOAM bashrc but headers not found (skipping): $f" >&2
     fi
   done
 
