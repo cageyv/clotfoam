@@ -66,7 +66,6 @@ Author: David Montgomery
 \*---------------------------------------------------------------------------*/
 
 // Classes from OpenFOAM
-#include "fvCFD.H"
 #include "fvMesh.H"
 #include "volFields.H"
 #include "surfaceFields.H"
