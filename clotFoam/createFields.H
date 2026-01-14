@@ -344,8 +344,7 @@ if (coagReactionsOn)
 }
 else 
 {
-    Info<< "Destroying species object for seBound Chemicals\n" << endl;
-    seBound.~Species();
+    Info<< "Coagulation reactions disabled; skipping seBound species init\n" << endl;
 }
 
 /**************************************************************************
@@ -598,6 +597,5 @@ if(coagReactionsOn)
 }
 else 
 {
-    Info<< "Destroying species object for pltBound Chemicals\n" << endl;
-    pltBound.~Species();
+    Info<< "Coagulation reactions disabled; skipping pltBound species init\n" << endl;
 }

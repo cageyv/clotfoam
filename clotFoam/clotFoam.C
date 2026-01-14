@@ -93,7 +93,15 @@ double R_ADP(const double& tau)
 
 int main(int argc, char *argv[])
 {
-    #include "setRootCaseLists.H"
+    #if defined(__has_include)
+        #if __has_include("setRootCaseLists.H")
+            #include "setRootCaseLists.H"
+        #else
+            #include "setRootCase.H"
+        #endif
+    #else
+        #include "setRootCase.H"
+    #endif
     #include "createTime.H"
     #include "createMesh.H"
 
