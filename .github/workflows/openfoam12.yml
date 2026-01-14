@@ -24,15 +24,24 @@ jobs:
     
     - name: Run compilation and tests
       run: |
+        # Run tests and capture exit code
         docker run --rm \
+          --name clotfoam-test \
+          -v $(pwd)/test-output:/test-output \
           clotfoam:openfoam12 \
-          /bin/bash /home/ofuser/docker/run-test.sh
+          /bin/bash -c "
+            /home/ofuser/docker/run-test.sh
+            EXIT_CODE=\$?
+            # Copy logs to mounted volume for CI artifact upload
+            mkdir -p /test-output
+            cp /home/ofuser/tutorials/rectangle2D/log.* /test-output/ 2>/dev/null || true
+            exit \$EXIT_CODE
+          "
     
     - name: Upload test logs
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-logs
-        path: |
-          tutorials/rectangle2D/log.*
+        path: test-output/
         if-no-files-found: ignore

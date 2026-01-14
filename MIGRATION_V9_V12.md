@@ -64,9 +64,10 @@ No breaking changes in build system - existing `Make/files` and `Make/options` w
 
 ## Testing Strategy
 - Build solver in OpenFOAM 12 Docker container
-- Run rectangle2D tutorial with limited timesteps (endTime=0.05)
+- Run rectangle2D tutorial with limited timesteps (6-10 steps, endTime=0.0015)
 - Verify compilation and runtime stability
 - Focus on stability, not result validation
+- Tests complete in ~2-3 minutes
 
 ## Known Issues
 *(Issues will be documented here as they are discovered)*
