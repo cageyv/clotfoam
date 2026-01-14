@@ -345,6 +345,11 @@ if (coagReactionsOn)
 else 
 {
     Info<< "Coagulation reactions disabled; skipping seBound species init\n" << endl;
+    // NOTE:
+    // Do NOT call destructors explicitly here. The seBound object is stack-allocated
+    // (derived type), and explicitly calling ~Species() is undefined behavior.
+    // When coagReactionsOn == false, the coagulation transport/reaction includes are
+    // skipped in the main loop, so seBound is intentionally unused.
 }
 
 /**************************************************************************
