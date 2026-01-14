@@ -102,11 +102,20 @@ jobs:
             # Compile first
             cd /home/ofuser/clotFoam && wclean && wmake
             
-            # Run test
+            # Run test and capture exit code
             /home/ofuser/docker/test-tjunction2d.sh
             EXIT_CODE=\$?
+            
+            # Always copy logs
             mkdir -p /test-output
             cp /home/ofuser/tutorials/Tjunction2D/log.* /test-output/ 2>/dev/null || true
+            
+            # Print logs on failure for CI visibility
+            if [ \$EXIT_CODE -ne 0 ] && [ -f /home/ofuser/tutorials/Tjunction2D/log.clotFoam ]; then
+              echo '=== SOLVER LOG (last 100 lines) ==='
+              tail -100 /home/ofuser/tutorials/Tjunction2D/log.clotFoam
+            fi
+            
             exit \$EXIT_CODE
           "
     
@@ -150,11 +159,20 @@ jobs:
             # Compile first
             cd /home/ofuser/clotFoam && wclean && wmake
             
-            # Run test
+            # Run test and capture exit code
             /home/ofuser/docker/test-hjunction3d.sh
             EXIT_CODE=\$?
+            
+            # Always copy logs
             mkdir -p /test-output
             cp /home/ofuser/tutorials/Hjunction3D/log.* /test-output/ 2>/dev/null || true
+            
+            # Print logs on failure for CI visibility
+            if [ \$EXIT_CODE -ne 0 ] && [ -f /home/ofuser/tutorials/Hjunction3D/log.clotFoam ]; then
+              echo '=== SOLVER LOG (last 100 lines) ==='
+              tail -100 /home/ofuser/tutorials/Hjunction3D/log.clotFoam
+            fi
+            
             exit \$EXIT_CODE
           "
     

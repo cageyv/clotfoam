@@ -47,6 +47,8 @@ FoamFile
 }
 
 application     clotFoam;
+coagReactionsOn true;
+smoothHadh      false;
 startFrom       startTime;
 startTime       0;
 stopAt          endTime;
@@ -66,10 +68,12 @@ maxCo           0.75;
 maxDeltaT       0.0001;
 EOF
 
-# Run solver
+# Run solver (disable set -e to capture exit code)
 echo "Running clotFoam ($TIMESTEPS_TARGET timesteps)..."
+set +e
 timeout $TIMEOUT_SECONDS clotFoam > log.clotFoam 2>&1
 SOLVER_EXIT=$?
+set -e
 
 # Restore original controlDict
 mv system/controlDict.orig system/controlDict
