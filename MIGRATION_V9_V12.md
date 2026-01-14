@@ -54,6 +54,10 @@ No breaking changes in build system - existing `Make/files` and `Make/options` w
 - ✅ Fixed ambiguous `PtrList::set()` calls in `Species_baseClass.H` - Added `.clone()` to resolve overload ambiguity
 - ✅ Changed `lookup<scalar>()` to `get<scalar>()` in `initSigmaReleaseADP.H` - API change in dictionary access
 - ✅ Changed `small` constant to `SMALL` in `setDeltaT.H` - Constant naming convention change
+- ✅ Fixed deprecated `dimensioned` constructors in `plateletConstants.H` - Changed from `lookup()` to `get<scalar>()`
+- ✅ Fixed deprecated `dimensioned` constructors in `chemConstants.H` - Changed from `lookup()` to `get<scalar>()`
+- ✅ Fixed deprecated `dimensioned` constructors in `createConstants.H` - Changed from `lookup()` to `get<scalar>()`
+- ✅ Added missing final newlines to 11 header files - Fixed wmkdepend parse warnings
 
 ### Phase 3: Runtime Fixes
 - ✅ Fixed OpenFOAM security restriction - Created non-root user (`ofuser`) in Docker to allow `#calc` and `#codeStream` execution
@@ -70,7 +74,7 @@ No breaking changes in build system - existing `Make/files` and `Make/options` w
 - Tests complete in ~2-3 minutes
 
 ## Known Issues
-*(Issues will be documented here as they are discovered)*
+None - All compilation and runtime issues resolved ✅
 
 ## References
 - [OpenFOAM Wiki: Porting from older versions to 1.3](https://openfoamwiki.net/index.php/HowTo_port_from_older_versions_to_13)
