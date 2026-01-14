@@ -8,9 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
-    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -22,17 +21,42 @@ jobs:
       run: |
         docker build -t clotfoam:openfoam12 -f docker/Dockerfile .
     
-    - name: Run compilation and tests
+    - name: Save Docker image
       run: |
-        # Run tests and capture exit code
+        docker save clotfoam:openfoam12 -o clotfoam-image.tar
+    
+    - name: Upload Docker image
+      uses: actions/upload-artifact@v4
+      with:
+        name: docker-image
+        path: clotfoam-image.tar
+        retention-days: 1
+
+  test-rectangle2d:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Download Docker image
+      uses: actions/download-artifact@v4
+      with:
+        name: docker-image
+    
+    - name: Load Docker image
+      run: docker load -i clotfoam-image.tar
+    
+    - name: Test rectangle2D
+      run: |
+        mkdir -p test-output
         docker run --rm \
-          --name clotfoam-test \
           -v $(pwd)/test-output:/test-output \
           clotfoam:openfoam12 \
           /bin/bash -c "
             /home/ofuser/docker/run-test.sh
             EXIT_CODE=\$?
-            # Copy logs to mounted volume for CI artifact upload
             mkdir -p /test-output
             cp /home/ofuser/tutorials/rectangle2D/log.* /test-output/ 2>/dev/null || true
             exit \$EXIT_CODE
@@ -42,6 +66,102 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: test-logs
+        name: logs-rectangle2d
+        path: test-output/
+        if-no-files-found: ignore
+
+  test-tjunction2d:
+    needs: test-rectangle2d
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Download Docker image
+      uses: actions/download-artifact@v4
+      with:
+        name: docker-image
+    
+    - name: Load Docker image
+      run: docker load -i clotfoam-image.tar
+    
+    - name: Test Tjunction2D
+      run: |
+        mkdir -p test-output
+        docker run --rm \
+          -v $(pwd)/test-output:/test-output \
+          clotfoam:openfoam12 \
+          /bin/bash -c "
+            source /usr/lib/openfoam/openfoam2412/etc/bashrc
+            export WM_PROJECT_USER_DIR=/home/ofuser/OpenFOAM/ofuser-v2412
+            export FOAM_USER_APPBIN=/home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/bin
+            export FOAM_USER_LIBBIN=/home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/lib
+            export PATH=\$FOAM_USER_APPBIN:\$PATH
+            
+            # Compile first
+            cd /home/ofuser/clotFoam && wclean && wmake
+            
+            # Run test
+            /home/ofuser/docker/test-tjunction2d.sh
+            EXIT_CODE=\$?
+            mkdir -p /test-output
+            cp /home/ofuser/tutorials/Tjunction2D/log.* /test-output/ 2>/dev/null || true
+            exit \$EXIT_CODE
+          "
+    
+    - name: Upload test logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: logs-tjunction2d
+        path: test-output/
+        if-no-files-found: ignore
+
+  test-hjunction3d:
+    needs: test-tjunction2d
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Download Docker image
+      uses: actions/download-artifact@v4
+      with:
+        name: docker-image
+    
+    - name: Load Docker image
+      run: docker load -i clotfoam-image.tar
+    
+    - name: Test Hjunction3D
+      run: |
+        mkdir -p test-output
+        docker run --rm \
+          -v $(pwd)/test-output:/test-output \
+          clotfoam:openfoam12 \
+          /bin/bash -c "
+            source /usr/lib/openfoam/openfoam2412/etc/bashrc
+            export WM_PROJECT_USER_DIR=/home/ofuser/OpenFOAM/ofuser-v2412
+            export FOAM_USER_APPBIN=/home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/bin
+            export FOAM_USER_LIBBIN=/home/ofuser/OpenFOAM/ofuser-v2412/platforms/linuxARM64GccDPInt32Opt/lib
+            export PATH=\$FOAM_USER_APPBIN:\$PATH
+            
+            # Compile first
+            cd /home/ofuser/clotFoam && wclean && wmake
+            
+            # Run test
+            /home/ofuser/docker/test-hjunction3d.sh
+            EXIT_CODE=\$?
+            mkdir -p /test-output
+            cp /home/ofuser/tutorials/Hjunction3D/log.* /test-output/ 2>/dev/null || true
+            exit \$EXIT_CODE
+          "
+    
+    - name: Upload test logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: logs-hjunction3d
         path: test-output/
         if-no-files-found: ignore

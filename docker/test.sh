@@ -50,6 +50,13 @@ fi
 # Modify controlDict to run 5-10 timesteps for testing
 cp system/controlDict system/controlDict.orig
 cat > system/controlDict << 'EOF'
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  12
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
