@@ -8,6 +8,14 @@ source_openfoam() {
     return 0
   fi
 
+  # OpenFOAM bashrc scripts are not always compatible with `set -u` (nounset).
+  # In particular, OpenFOAM v2412 references WM_PROJECT_SITE unguarded.
+  # We temporarily disable nounset while sourcing.
+  local had_nounset=0
+  case "$-" in
+    *u*) had_nounset=1 ;;
+  esac
+
   local candidates=(
     "/opt/openfoam-dev/etc/bashrc"
     "/usr/lib/openfoam/openfoam-dev/etc/bashrc"
@@ -23,7 +31,11 @@ source_openfoam() {
   for f in "${candidates[@]}"; do
     if [[ -f "$f" ]]; then
       # shellcheck disable=SC1090
+      set +u
       source "$f"
+      if [[ "$had_nounset" == "1" ]]; then
+        set -u
+      fi
       return 0
     fi
   done
