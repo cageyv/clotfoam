@@ -1,0 +1,75 @@
+name: openfoam
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+
+jobs:
+  openfoam12-apt:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set executable bits
+        shell: bash
+        run: |
+          chmod +x ci/build.sh ci/smoke.sh
+          chmod +x ci/install-openfoam12-ubuntu.sh
+
+      - name: Install OpenFOAM v12 (Ubuntu packages)
+        shell: bash
+        run: |
+          ./ci/install-openfoam12-ubuntu.sh
+
+      - name: Build + smoke test (rectangle2D)
+        shell: bash
+        run: |
+          CI_ARTIFACTS_DIR="${{ github.workspace }}/.ci-artifacts/v12" CI=1 ./ci/smoke.sh
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openfoam-v12-logs
+          path: |
+            .ci-artifacts/v12/**/log.*
+
+  openfoam2412-container:
+    runs-on: ubuntu-24.04
+    container:
+      image: opencfd/openfoam-dev:2412
+      options: --user 1001:1001
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set executable bits
+        shell: bash
+        run: |
+          chmod +x ci/build.sh ci/smoke.sh
+
+      - name: Build + smoke test (rectangle2D)
+        shell: bash
+        run: |
+          # In container jobs, `${{ github.workspace }}` expands to the host path.
+          # Use $GITHUB_WORKSPACE (container path, typically /__w/...) so logs are
+          # written where `upload-artifact` can find them.
+          mkdir -p "$GITHUB_WORKSPACE/.ci-artifacts/v2412"
+          # OpenFOAM v2412 blocks dynamic code execution as root (e.g. #calc, #codeStream).
+          # Ensure a writable HOME for OpenFOAM user dirs in the container.
+          mkdir -p "$GITHUB_WORKSPACE/.ci-home"
+          export HOME="$GITHUB_WORKSPACE/.ci-home"
+          export USER="${USER:-runner}"
+          export LOGNAME="$USER"
+          CI=1 CI_ARTIFACTS_DIR="$GITHUB_WORKSPACE/.ci-artifacts/v2412" bash -lc "./ci/smoke.sh"
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openfoam-v2412-logs
+          path: |
+            .ci-artifacts/v2412/**/log.*
+

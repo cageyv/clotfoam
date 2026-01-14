@@ -66,9 +66,24 @@ Author: David Montgomery
 \*---------------------------------------------------------------------------*/
 
 // Classes from OpenFOAM
-#include "fvCFD.H"
+#include "argList.H"
+#include "dimensionSets.H"
+#include "pressureReference.H"
+#include "findRefCell.H"
+#include "constrainPressure.H"
+#include "constrainHbyA.H"
+#include "adjustPhi.H"
+
+#include "fvMesh.H"
+#include "volFields.H"
+#include "surfaceFields.H"
+#include "fvMatrices.H"
+#include "fvc.H"
+#include "fvm.H"
 #include "pisoControl.H"
 #include "mathematicalConstants.H"
+
+using namespace Foam;
 
 // Classes/structures for managing various species
 #include "plateletConstants.H"
@@ -93,7 +108,7 @@ double R_ADP(const double& tau)
 
 int main(int argc, char *argv[])
 {
-    #include "setRootCaseLists.H"
+    #include "setRootCase.H"
     #include "createTime.H"
     #include "createMesh.H"
 
@@ -120,7 +135,7 @@ int main(int argc, char *argv[])
     {   
         if (runTime.write())
         {
-            Info<< "Time = " << runTime.timeName() << nl << endl;
+            Info<< "Time = " << runTime.userTimeName() << nl << endl;
         }
 
         // Variable time step control variables and adjustments

@@ -48,7 +48,9 @@ internalField  #codeStream
         //- Optional:
         codeInclude
         #{
-            #include "fvCFD.H"
+            #include "IOdictionary.H"
+            #include "fvMesh.H"
+            #include "volFields.H"
         #};
 
         //- Optional:
@@ -56,6 +58,7 @@ internalField  #codeStream
         #{
             -I$(LIB_SRC)/finiteVolume/lnInclude  \
             -I$(LIB_SRC)/meshTools/lnInclude \
+            -I$(LIB_SRC)/OpenFOAM/lnInclude \
         #};
     };
 

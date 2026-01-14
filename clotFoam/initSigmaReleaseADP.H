@@ -29,7 +29,7 @@ if
 (
     remainder
     (
-        runTime.controlDict().lookup<scalar>("startTime"),
+        readScalar(runTime.controlDict().lookup("startTime")),
         sigma_dt
     ) > 1e-12
 )
@@ -50,7 +50,7 @@ IOList<scalar> tau
     IOobject
     (   
         "tau",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,                                      
         IOobject::NO_WRITE
@@ -62,7 +62,7 @@ IOList<scalar> tau
 // Also initializes tau if startTime > 0 and no tau present at startTime
 forAll(ddt_Pbnew,i)
 {
-    scalar t0 = runTime.controlDict().lookup<scalar>("startTime");
+    scalar t0 = readScalar(runTime.controlDict().lookup("startTime"));
     
     if(t0 < 1e-12) // If startTime = 0, initialize as zeros
     {
@@ -74,7 +74,7 @@ forAll(ddt_Pbnew,i)
                 IOobject
                 (   
                     "ddt_Pbnew_" + std::to_string(i),
-                    runTime.timeName(),
+                    runTime.name(),
                     mesh,
                     IOobject::NO_READ,                                      
                     IOobject::NO_WRITE
@@ -93,7 +93,7 @@ forAll(ddt_Pbnew,i)
                 IOobject
                 (   
                     "ddt_Pbnew_" + std::to_string(i),
-                    runTime.timeName(),
+                    runTime.name(),
                     mesh,
                     IOobject::MUST_READ,                                      
                     IOobject::NO_WRITE

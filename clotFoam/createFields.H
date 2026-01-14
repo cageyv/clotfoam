@@ -8,7 +8,7 @@ volScalarField p
     IOobject
     (
         "p",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -23,7 +23,7 @@ volVectorField U
     IOobject
     (
         "U",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -38,7 +38,7 @@ volScalarField shearRate
     IOobject
     (
         "shearRate",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -50,8 +50,8 @@ volScalarField shearRate
 
 label pRefCell = 0;
 scalar pRefValue = 0.0;
-setRefCell(p, mesh.solutionDict().subDict("PISO"), pRefCell, pRefValue);
-mesh.setFluxRequired(p.name());
+setRefCell(p, piso.dict(), pRefCell, pRefValue);
+mesh.schemes().setFluxRequired(p.name());
 
 /**************************************************************************
     Fields for Platelet Reactions
@@ -63,7 +63,7 @@ volScalarField eta
     IOobject
     (
         "eta",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -78,7 +78,7 @@ volScalarField Hadh
     IOobject
     (
         "Hadh",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::MUST_READ,
         IOobject::AUTO_WRITE
@@ -103,7 +103,7 @@ volScalarField Theta_T
     IOobject
     (
         "Theta_T",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -118,7 +118,7 @@ volScalarField Theta_B
     IOobject
     (
         "Theta_B",
-        runTime.timeName(),
+            runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -136,7 +136,7 @@ volScalarField ADP
     IOobject
     (
         "ADP",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -153,7 +153,7 @@ volScalarField sigma_release
     IOobject
     (
         "sigma_release",
-        runTime.timeName(),
+        runTime.name(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
@@ -202,7 +202,7 @@ Plt.field.set
         IOobject
         (   
             "plt_Pmu",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,                                      
             IOobject::AUTO_WRITE
@@ -221,7 +221,7 @@ Plt.field.set
         IOobject
         (
             "plt_Pma",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,
             IOobject::AUTO_WRITE
@@ -240,7 +240,7 @@ Plt.field.set
         IOobject
         (
             "plt_Pba",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::READ_IF_PRESENT,
             IOobject::AUTO_WRITE
@@ -259,7 +259,7 @@ Plt.field.set
         IOobject
         (
             "plt_Pbse",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::READ_IF_PRESENT,
             IOobject::AUTO_WRITE
@@ -308,7 +308,7 @@ if (coagReactionsOn)
             IOobject
             (   
                 "seBound_E0",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::MUST_READ,                                      
                 IOobject::AUTO_WRITE
@@ -327,7 +327,7 @@ if (coagReactionsOn)
             IOobject
             (
                 "seBound_C0",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::MUST_READ,
                 IOobject::AUTO_WRITE
@@ -344,8 +344,12 @@ if (coagReactionsOn)
 }
 else 
 {
-    Info<< "Destroying species object for seBound Chemicals\n" << endl;
-    seBound.~Species();
+    Info<< "Coagulation reactions disabled; skipping seBound species init\n" << endl;
+    // NOTE:
+    // Do NOT call destructors explicitly here. The seBound object is stack-allocated
+    // (derived type), and explicitly calling ~Species() is undefined behavior.
+    // When coagReactionsOn == false, the coagulation transport/reaction includes are
+    // skipped in the main loop, so seBound is intentionally unused.
 }
 
 /**************************************************************************
@@ -383,7 +387,7 @@ fluidPhase.field.set
         IOobject
         (   
             "fluidPhase_S1",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,                                      
             IOobject::AUTO_WRITE
@@ -402,7 +406,7 @@ fluidPhase.field.set
         IOobject
         (   
             "fluidPhase_S2",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,                                      
             IOobject::AUTO_WRITE
@@ -421,7 +425,7 @@ fluidPhase.field.set
         IOobject
         (
             "fluidPhase_E1",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,
             IOobject::AUTO_WRITE
@@ -440,7 +444,7 @@ fluidPhase.field.set
         IOobject
         (
             "fluidPhase_E2",
-            runTime.timeName(),
+            runTime.name(),
             mesh,
             IOobject::MUST_READ,
             IOobject::AUTO_WRITE
@@ -489,7 +493,7 @@ if(coagReactionsOn)
             IOobject
             (   
                 "pltBound_S1b",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::MUST_READ,                                      
                 IOobject::AUTO_WRITE
@@ -508,7 +512,7 @@ if(coagReactionsOn)
             IOobject
             (   
                 "pltBound_S2b",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE
@@ -527,7 +531,7 @@ if(coagReactionsOn)
             IOobject
             (
                 "pltBound_E1b",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE
@@ -546,7 +550,7 @@ if(coagReactionsOn)
             IOobject
             (
                 "pltBound_E2b",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE
@@ -565,7 +569,7 @@ if(coagReactionsOn)
             IOobject
             (
                 "pltBound_C1",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE
@@ -584,7 +588,7 @@ if(coagReactionsOn)
             IOobject
             (
                 "pltBound_C2",
-                runTime.timeName(),
+                runTime.name(),
                 mesh,
                 IOobject::READ_IF_PRESENT,                                      
                 IOobject::AUTO_WRITE
@@ -598,6 +602,5 @@ if(coagReactionsOn)
 }
 else 
 {
-    Info<< "Destroying species object for pltBound Chemicals\n" << endl;
-    pltBound.~Species();
+    Info<< "Coagulation reactions disabled; skipping pltBound species init\n" << endl;
 }
